@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bazil Ahmad | EECS @ UC Berkeley</title>
+    <meta name="description" content="Personal website of Bazil Ahmad - Senior studying Electrical Engineering and Computer Science at UC Berkeley">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav__container">
+            <a href="#home" class="nav__logo">~/bazil</a>
+            <ul class="nav__links">
+                <li><a href="#projects" class="nav__link">projects</a></li>
+                <li><a href="#research" class="nav__link">research</a></li>
+                <li><a href="#cv" class="nav__link">cv</a></li>
+                <li><a href="#interests" class="nav__link">interests</a></li>
+                <li><a href="#now" class="nav__link">now</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="home" class="hero">
+        <div class="hero__container">
+            <div class="hero__terminal">
+                <span class="hero__prompt">bazil@berkeley</span><span class="hero__separator">:</span><span class="hero__path">~</span><span class="hero__dollar">$</span>
+            </div>
+            <h1 class="hero__name">Bazil Ahmad</h1>
+            <p class="hero__tagline">Senior, Electrical Engineering & Computer Science</p>
+            <p class="hero__location">UC Berkeley</p>
+            <div class="hero__links">
+                <a href="mailto:your.email@berkeley.edu" class="hero__link">email</a>
+                <a href="https://github.com/yourusername" class="hero__link" target="_blank" rel="noopener">github</a>
+                <a href="https://linkedin.com/in/yourusername" class="hero__link" target="_blank" rel="noopener">linkedin</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Projects Section -->
+    <section id="projects" class="section">
+        <div class="section__container">
+            <h2 class="section__title">
+                <span class="section__prompt">&gt;</span> projects
+            </h2>
+            <div class="cards">
+                <!-- Project Card Template -->
+                <article class="card">
+                    <h3 class="card__title">Project Name</h3>
+                    <p class="card__description">
+                        Brief description of the project. What it does, why it matters,
+                        and what you learned from building it.
+                    </p>
+                    <div class="card__tags">
+                        <span class="tag">Python</span>
+                        <span class="tag">ML</span>
+                        <span class="tag">React</span>
+                    </div>
+                    <div class="card__links">
+                        <a href="#" class="card__link">github</a>
+                        <a href="#" class="card__link">demo</a>
+                    </div>
+                </article>
+
+                <!-- Add more project cards here -->
+                <article class="card">
+                    <h3 class="card__title">Another Project</h3>
+                    <p class="card__description">
+                        Description of your second project. Keep it concise but informative.
+                    </p>
+                    <div class="card__tags">
+                        <span class="tag">C++</span>
+                        <span class="tag">CUDA</span>
+                    </div>
+                    <div class="card__links">
+                        <a href="#" class="card__link">github</a>
+                    </div>
+                </article>
+
+                <article class="card">
+                    <h3 class="card__title">Third Project</h3>
+                    <p class="card__description">
+                        Description of your third project.
+                    </p>
+                    <div class="card__tags">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag">Node.js</span>
+                    </div>
+                    <div class="card__links">
+                        <a href="#" class="card__link">github</a>
+                        <a href="#" class="card__link">paper</a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Research Section -->
+    <section id="research" class="section section--alt">
+        <div class="section__container">
+            <h2 class="section__title">
+                <span class="section__prompt">&gt;</span> research
+            </h2>
+            <p class="section__intro">Current threads of research I'm exploring.</p>
+
+            <div class="cards">
+                <!-- Research Thread Card -->
+                <article class="card card--research">
+                    <div class="card__status card__status--active">active</div>
+                    <h3 class="card__title">Research Thread 1</h3>
+                    <p class="card__description">
+                        Description of your first research thread. What questions are you
+                        investigating? What approaches are you taking?
+                    </p>
+                    <div class="card__links">
+                        <a href="#" class="card__link">paper</a>
+                        <a href="#" class="card__link">lab</a>
+                    </div>
+                </article>
+
+                <article class="card card--research">
+                    <div class="card__status card__status--active">active</div>
+                    <h3 class="card__title">Research Thread 2</h3>
+                    <p class="card__description">
+                        Description of your second research area. Include methodology
+                        and any preliminary findings if applicable.
+                    </p>
+                    <div class="card__links">
+                        <a href="#" class="card__link">preprint</a>
+                    </div>
+                </article>
+
+                <article class="card card--research">
+                    <div class="card__status card__status--ongoing">ongoing</div>
+                    <h3 class="card__title">Research Thread 3</h3>
+                    <p class="card__description">
+                        Another area of research you're pursuing.
+                    </p>
+                    <div class="card__links">
+                        <a href="#" class="card__link">notes</a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- CV Section -->
+    <section id="cv" class="section">
+        <div class="section__container">
+            <h2 class="section__title">
+                <span class="section__prompt">&gt;</span> cv
+            </h2>
+
+            <a href="#" class="cv__download">download full cv (pdf)</a>
+
+            <!-- Education -->
+            <div class="cv__category">
+                <h3 class="cv__heading">education</h3>
+                <div class="cv__item">
+                    <div class="cv__header">
+                        <span class="cv__title">University of California, Berkeley</span>
+                        <span class="cv__date">2021 - 2025</span>
+                    </div>
+                    <p class="cv__detail">B.S. Electrical Engineering & Computer Science</p>
+                    <p class="cv__detail cv__detail--muted">Relevant coursework: ...</p>
+                </div>
+            </div>
+
+            <!-- Experience -->
+            <div class="cv__category">
+                <h3 class="cv__heading">experience</h3>
+                <div class="cv__item">
+                    <div class="cv__header">
+                        <span class="cv__title">Position Title</span>
+                        <span class="cv__date">Summer 2024</span>
+                    </div>
+                    <p class="cv__detail">Company Name</p>
+                    <p class="cv__detail cv__detail--muted">Brief description of what you did.</p>
+                </div>
+                <div class="cv__item">
+                    <div class="cv__header">
+                        <span class="cv__title">Another Position</span>
+                        <span class="cv__date">2023 - Present</span>
+                    </div>
+                    <p class="cv__detail">Organization Name</p>
+                    <p class="cv__detail cv__detail--muted">Description of responsibilities and achievements.</p>
+                </div>
+            </div>
+
+            <!-- Skills -->
+            <div class="cv__category">
+                <h3 class="cv__heading">skills</h3>
+                <div class="cv__skills">
+                    <div class="cv__skill-group">
+                        <span class="cv__skill-label">languages:</span>
+                        <span class="cv__skill-items">Python, C/C++, JavaScript, Java, Go</span>
+                    </div>
+                    <div class="cv__skill-group">
+                        <span class="cv__skill-label">frameworks:</span>
+                        <span class="cv__skill-items">React, PyTorch, TensorFlow, Node.js</span>
+                    </div>
+                    <div class="cv__skill-group">
+                        <span class="cv__skill-label">tools:</span>
+                        <span class="cv__skill-items">Git, Docker, Linux, AWS</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Interests Section -->
+    <section id="interests" class="section section--alt">
+        <div class="section__container">
+            <h2 class="section__title">
+                <span class="section__prompt">&gt;</span> interests
+            </h2>
+            <div class="interests">
+                <div class="interest">
+                    <h3 class="interest__title">Interest One</h3>
+                    <p class="interest__description">
+                        Write about something you're passionate about outside of work/school.
+                    </p>
+                </div>
+                <div class="interest">
+                    <h3 class="interest__title">Interest Two</h3>
+                    <p class="interest__description">
+                        Another hobby or interest that defines who you are.
+                    </p>
+                </div>
+                <div class="interest">
+                    <h3 class="interest__title">Interest Three</h3>
+                    <p class="interest__description">
+                        Keep adding more as you see fit.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Now Section -->
+    <section id="now" class="section">
+        <div class="section__container">
+            <h2 class="section__title">
+                <span class="section__prompt">&gt;</span> now
+            </h2>
+            <p class="now__updated">last updated: December 2024</p>
+
+            <div class="now__content">
+                <p>What I'm focused on right now:</p>
+                <ul class="now__list">
+                    <li>Finishing up my senior year at Berkeley</li>
+                    <li>Working on [current project/research]</li>
+                    <li>Learning [new skill or technology]</li>
+                    <li>Reading [current book]</li>
+                </ul>
+                <p class="now__note">
+                    This is a <a href="https://nownownow.com/about" target="_blank" rel="noopener">/now page</a>.
+                    Update it regularly to share what you're currently up to.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer__container">
+            <div class="footer__terminal">
+                <span class="footer__prompt">bazil@berkeley</span><span class="footer__separator">:</span><span class="footer__path">~</span><span class="footer__dollar">$</span>
+                <span class="footer__command">echo "let's connect"</span>
+            </div>
+            <div class="footer__links">
+                <a href="mailto:your.email@berkeley.edu" class="footer__link">email</a>
+                <a href="https://github.com/yourusername" class="footer__link" target="_blank" rel="noopener">github</a>
+                <a href="https://linkedin.com/in/yourusername" class="footer__link" target="_blank" rel="noopener">linkedin</a>
+                <a href="https://twitter.com/yourusername" class="footer__link" target="_blank" rel="noopener">twitter</a>
+            </div>
+            <p class="footer__copy">&copy; 2024 Bazil Ahmad</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
