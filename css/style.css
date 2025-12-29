@@ -305,6 +305,12 @@ ul {
     border: 1px solid var(--accent-amber);
 }
 
+.card__status--tbd {
+    background: rgba(255, 25, 0, 0.1);
+    color: var(--accent-magenta);
+    border: 1px solid var(--accent-magenta);
+}
+
 .card__title {
     font-family: var(--font-mono);
     font-size: 1.2rem;
@@ -353,6 +359,28 @@ ul {
 .card__link::after {
     content: ']';
     color: var(--text-muted);
+}
+
+.card__preview {
+    display: block;
+    margin-top: var(--spacing-sm);
+    border-radius: 4px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all var(--transition-base);
+}
+
+.card__preview:hover {
+    border-color: var(--accent-cyan);
+    box-shadow: var(--glow-cyan);
+}
+
+.card__preview img {
+    width: 100%;
+    height: auto;
+    max-height: 150px;
+    object-fit: cover;
+    display: block;
 }
 
 /* ---------- CV Section ---------- */
