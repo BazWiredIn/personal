@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Mitigation | Bazil Ahmad</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav__container">
+            <a href="index.html" class="nav__logo">~/bazil</a>
+            <ul class="nav__links">
+                <li><a href="index.html#projects" class="nav__link">projects</a></li>
+                <li><a href="index.html#research" class="nav__link">research</a></li>
+                <li><a href="index.html#cv" class="nav__link">cv</a></li>
+                <li><a href="index.html#interests" class="nav__link">interests</a></li>
+                <li><a href="index.html#now" class="nav__link">now</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="project-page">
+        <div class="project-page__container">
+            <a href="index.html#projects" class="project-page__back">back to projects</a>
+
+            <h1 class="project-page__title">Traffic Mitigation</h1>
+
+            <p class="project-page__description">
+                An EECS149 project exploring how Vehicle-to-Vehicle (V2V) communication amongst autonomous vehicles can mitigate traffic. Demonstrated with Pololu robots using line tracking, ToF sensors (VL53L4CD), and WIFI modules (ESP8266). We used the <a href="https://en.wikipedia.org/wiki/Intelligent_driver_model">Intelligent Driver Model</a> and <a href="https://en.wikipedia.org/wiki/Ornstein%E2%80%93Uhlenbeck_process">Ornstein-Uhlenbeck</a> processes to model human driving behavior.
+            </p>
+
+            <div class="card__tags" style="margin-bottom: var(--spacing-lg);">
+                <span class="tag">C</span>
+                <span class="tag">Hardware/Embedded</span>
+            </div>
+
+            <!-- Embedded Documents -->
+            <section class="project-page__section">
+                <h2 class="project-page__section-title">> documents</h2>
+                <div class="project-page__embed-container">
+                    <div class="project-page__embed">
+                        <div class="project-page__embed-label">paper</div>
+                        <iframe src="assets/EECS149_Final_Project_Report (2) (3).pdf" title="Project Paper"></iframe>
+                    </div>
+                    <div class="project-page__embed">
+                        <div class="project-page__embed-label">poster</div>
+                        <iframe src="assets/EE149 Final Poster - Group 5 (4) (1).pdf" title="Project Poster"></iframe>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Thoughts Section -->
+            <section class="project-page__section">
+                <h2 class="project-page__section-title">> my thoughts</h2>
+                <div class="project-page__thoughts">
+ <p>
+      Going into this project, I was convinced that reinforcement learning was the “right” tool for the job. Prior work had shown that learned policies could dampen stop-and-go waves in mixed-autonomy traffic, and adapting these ideas to a physical multi-robot setup felt like a natural next step. I spent dozens of hours training, evaluating, and iterating on RL policies inspired by prior work, slowly tuning reward functions and observing steady improvements in simulation.
+    </p>
+
+    <p>
+      The problem was that all of this progress lived in a world of perfect simulations.
+    </p>
+
+    <p>
+      Once we deployed learned policies onto real Pololu robots (~8 cm long), the sim-to-real gap became unavoidable. At this scale, the system is dominated by sensing noise, actuation delay, wheel slip, and tight safety margins. Policies that appeared stable in simulation exhibited aggressive or brittle behavior on hardware, sometimes resulting in collisions despite being “safe” according to the reward function.
+    </p>
+
+    <p>
+      Iteration was slow and opaque. A small reward tweak required retraining for hours, only to discover that the policy had found a new way to optimize the objective while violating the intent. Some policies minimized penalties by driving overly conservatively and destroying throughput; others exploited artifacts that simply do not exist in the physical system. Even when a policy performed well on average metrics, it was difficult to explain or debug specific failures.
+    </p>
+
+    <p>
+      This led to an important realization: the issue was not just hyperparameter tuning or training time — it was a mismatch between the learning abstraction and the deployment constraints. On real hardware, safety violations are binary, latency matters, and every control decision must be interpretable under uncertainty. A black-box policy that occasionally “does the wrong thing for the right reward” is unacceptable in a physical autonomy stack.
+    </p>
+                </div>
+            </section>
+
+                        <section class="project-page__section">
+                <h2 class="project-page__section-title">> Reliability and Reality</h2>
+                <div class="project-page__thoughts">
+   <p>
+      What ultimately pushed this project forward was a shift in priorities: from optimality to reliability. Deterministic controllers built from explicit physical assumptions proved far easier to reason about, debug, and harden against edge cases than learned policies.
+    </p>
+
+    <p>
+      The final system uses a physics-based Intelligent Driver Model (IDM) combined with an event-driven finite state machine (FSM). Local control enforces strict safety constraints using measured headway and velocity, while Vehicle-to-Vehicle (V2V) communication is used conservatively to propagate braking behavior downstream.
+    </p>
+
+    <p>
+      A key design decision was asymmetry: upstream information can influence deceleration but never override local safety logic. If an upstream autonomous vehicle is braking, downstream vehicles blend this information with their locally computed safe velocity. If the upstream vehicle is accelerating, V2V input is ignored entirely. This structure prevents unsafe amplification while still reducing reaction latency to braking events.
+    </p>
+
+    <p>
+      This approach aligned far better with real hardware constraints. Behavior was predictable, failure modes were understandable, and debugging could be done by inspecting state transitions rather than retraining a policy. In practice, the FSM-based controller was significantly more robust to sensor noise, actuation delay, and stochastic disturbances.
+    </p>
+ <img src="assets/FSM.drawio(7).png" alt="FSM Logic">
+
+
+                </div>
+            </section>
+
+            <section class="project-page__section">
+  <h2 class="project-page__section-title">&gt; human driving as a stochastic process</h2>
+  <div class="project-page__thoughts">
+
+    <p>
+      To make the environment realistic, human-driven vehicles were not modeled as deterministic controllers. Instead, they follow an IDM formulation with stochastic perturbations applied via an Ornstein–Uhlenbeck (OU) process on the desired speed.
+    </p>
+
+    <p>
+      This captures an important aspect of real driving behavior: humans do not act randomly at each timestep, but they do exhibit temporally correlated variability — hesitation, delayed reactions, and gradual drift. These stochastic dynamics are precisely what generate stop-and-go waves and make traffic difficult to stabilize.
+    </p>
+
+    <p>
+      Introducing correlated noise exposed a major weakness of learned policies: they struggled to remain safe under rare but plausible disturbances. In contrast, the FSM-based controller remained stable because safety was enforced explicitly at every control step rather than implicitly through reward shaping.
+    </p>
+
+  </div>
+</section>
+<section class="project-page__section">
+  <h2 class="project-page__section-title">&gt; future work &amp; research direction</h2>
+  <div class="project-page__thoughts">
+
+    <p>
+      I don't view this project as “RL failed” — I view it as a signal that the original setup mixed too many confounders at once (scale mismatch, partial observability, noisy hardware, and algorithm choice). My next goal is to isolate those variables and run a controlled comparison between learned policies (DQN/DDPG-style) and the FSM-based controller using explicit safety metrics.
+    </p>
+
+    <p>
+      <strong>Possible causes of failure (numbered):</strong>
+    </p>
+
+    <ol>
+      <li>
+        <strong>Algorithm + action-space mismatch:</strong> I used DQN with discretized accelerations for embedded feasibility, while the reference work used continuous control (e.g., DDPG). Discretization can be brittle near safety boundaries and may encourage oscillatory behavior.
+      </li>
+      <li>
+        <strong>Reward misspecification vs hard constraints:</strong> reward shaping can encourage “safe on average” behavior while still allowing rare, catastrophic constraint violations. This is especially problematic when collisions are binary and unacceptable.
+      </li>
+      <li>
+        <strong>Partial observability under real sensing:</strong> Time-of-Flight noise, quantization, dropout, and latency break the Markov assumptions many RL pipelines implicitly rely on, creating hidden state the policy never learns to represent.
+      </li>
+      <li>
+        <strong>Actuation delay + non-ideal dynamics:</strong> wheel slip, battery sag, motor dead zones, and timing jitter change the effective dynamics across runs. Policies trained in a clean model can become overconfident and aggressive on hardware.
+      </li>
+      <li>
+        <strong>Simulation scale mismatch:</strong> SUMO is designed for meter-scale vehicles and traffic models; at robot scale, contact interactions and tight turning radii create failure modes that are not captured well by typical SUMO dynamics.
+      </li>
+      <li>
+        <strong>Evaluation metric mismatch:</strong> optimizing reward without an explicit safety metric can hide risk. A policy may look “good” by throughput or average speed while exhibiting unacceptable TTC violations or near-collision spikes.
+      </li>
+    </ol>
+
+    <p>
+      <strong>What I want to accomplish (scoped):</strong> build a repeatable benchmark that answers one concrete question:
+      <em>under realistic noise and delay, which controller family achieves better safety–throughput tradeoffs: learned policies or a structured FSM?</em>
+    </p>
+
+    <p>
+      <strong>What I'm doing differently from last time:</strong> instead of iterating informally on reward weights and hoping sim-to-real works, I’m designing an experiment with (1) explicit safety metrics, (2) controlled noise injection, and (3) a fixed evaluation protocol. I also plan to train much faster by using an NVIDIA GPU, which will enable broader sweeps (reward weights, architectures, and noise levels) rather than one-off training runs.
+    </p>
+
+    <p>
+      <strong>Concrete plan:</strong>
+    </p>
+
+    <ol>
+      <li>
+        <strong>Define safety + comfort metrics (weekend-sized):</strong>
+        evaluate controllers using TTC violation rate, minimum TTC distribution, hard constraint violations (collisions / min-gap breaches), and jerk (comfort). Keep throughput measured by average velocity to prevent “cheating by slowing down.”
+      </li>
+      <li>
+        <strong>Controlled realism in simulation (small, measurable):</strong>
+        inject sensor noise, latency, and dropout into observations; inject actuation delay and bounded actuation error into dynamics. Increase noise progressively to map where each controller breaks.
+      </li>
+      <li>
+        <strong>Baseline controllers (fast to implement):</strong>
+        treat the FSM+IDM controller as a strong structured baseline, then compare against DQN (discrete actions) and a continuous-control method (DDPG-style). Hold the observation set constant where possible.
+      </li>
+      <li>
+        <strong>Training protocol upgrade (GPU + reproducibility):</strong>
+        run multiple seeds, log safety metrics during training (not just reward), and save “best-by-safety” checkpoints rather than “best-by-return.”
+      </li>
+      <li>
+        <strong>Scale disentanglement:</strong>
+        repeat the same benchmark at standard vehicle scale in SUMO to separate “robot-scale artifacts” from “algorithmic limitations.”
+      </li>
+    </ol>
+
+    <p>
+      <strong>Success criteria:</strong> I’ll consider this thread successful if I can produce a clear plot or table showing <br> (a) safety vs throughput curves across latency levels and congestion levels, and <br> (b) the regimes where learned policies outperform structured control and where they fail. <br> Ultimately this should tell us where learned policies thrive, allowing us to possibly embed a learned policy state. True safety + traffic optimality = success!
+
+  </div>
+</section>
+
+
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer__container">
+            <p class="footer__copy">&copy; 2025 Bazil Ahmad</p>
+        </div>
+    </footer>
+</body>
+</html>
