@@ -224,6 +224,36 @@ ul {
     box-shadow: var(--glow-cyan);
 }
 
+.hero__bio {
+    max-width: 700px;
+    margin-top: var(--spacing-lg);
+    text-align: left;
+}
+
+.hero__bio p {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.8;
+    margin-bottom: var(--spacing-sm);
+}
+
+.hero__bio p:first-child {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+}
+
+.hero__bio-link {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--accent-cyan);
+    display: inline-block;
+    margin-top: var(--spacing-xs);
+}
+
+.hero__bio-link:hover {
+    color: var(--accent-magenta);
+}
+
 /* ---------- Sections ---------- */
 .section {
     padding: var(--spacing-xl) var(--spacing-md);

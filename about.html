@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | Bazil Ahmad</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .about-page {
+            padding-top: calc(var(--nav-height) + var(--spacing-lg));
+            min-height: 100vh;
+        }
+        .about-page__container {
+            max-width: 750px;
+            margin: 0 auto;
+            padding: var(--spacing-md);
+        }
+        .about-page__back {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            margin-bottom: var(--spacing-md);
+            display: inline-block;
+        }
+        .about-page__back::before {
+            content: '← ';
+        }
+        .about-page__title {
+            font-family: var(--font-mono);
+            font-size: 2.5rem;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-lg);
+        }
+        .about-page__content p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.9;
+            margin-bottom: var(--spacing-md);
+        }
+        .about-page__content p:first-child {
+            color: var(--text-primary);
+            font-size: 1.15rem;
+        }
+        .about-page__content em {
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav__container">
+            <a href="index.html" class="nav__logo">~/bazil</a>
+            <ul class="nav__links">
+                <li><a href="about.html" class="nav__link active">about</a></li>
+                <li><a href="index.html#projects" class="nav__link">projects</a></li>
+                <li><a href="index.html#research" class="nav__link">research</a></li>
+                <li><a href="index.html#cv" class="nav__link">cv</a></li>
+                <li><a href="index.html#interests" class="nav__link">interests</a></li>
+                <li><a href="index.html#now" class="nav__link">now</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="about-page">
+        <div class="about-page__container">
+            <a href="index.html" class="about-page__back">back to home</a>
+
+            <h1 class="about-page__title">about me</h1>
+
+            <div class="about-page__content">
+                <p>I've always loved math, both for its structure and for what it makes possible.</p>
+
+                <p>In high school, that curiosity pushed me to self-study calculus so I could take multivariable calculus and understand physics more deeply. I interned at Boeing working on radiation mitigation for deep-space aircraft, and came to Berkeley as a mechanical engineering major, thinking I might minor in physics. It felt like the cleanest way I knew to turn math into something tangible.</p>
+
+                <p>That plan shifted when I took CS61A. I had never written a line of code before, but something clicked almost immediately. Computation didn't replace the math I loved. It amplified it. It gave me a way to break problems down, to make assumptions explicit, and to ask better questions. Through discrete structures, probability, linear algebra, and optimization, I started to see how abstract ideas could shape real systems.</p>
+
+                <p>I ask a lot of questions. Sometimes more than is comfortable. I've found that not asking a question can make you look wise in the moment, but it quietly limits how far you can go. The people I admire most, in research, engineering, and life, are the ones who are willing to look unsure long enough to understand something deeply. "He who asks a questions remains a fool for five minutes. He who does not ask remains a fool forever.” (Chinese Proverb)</p>
+
+                <p>Since then, I've worked across machine learning, systems, and large-scale software. At Amazon, I worked on multi-expert routing within Alexa+, where small architectural decisions had outsized effects on real user behavior. At GenPf, I built a regime analysis pipeline that maps current macroeconomic conditions to historically similar periods using embeddings and clustering. At AlectoAI, I developed real-time face recognition systems that had to work under bad lighting, unusual angles, and partial occlusions, where robustness mattered more than elegance. Most recently, I worked at CityStreams, helping bring transparency to local government by building AI-driven document generation pipelines and breaking monoliths into microservices.</p>
+
+                <p>What ties all of this together isn't a specific domain, but a way of thinking. I'm drawn to problems where theory runs head-first into messy constraints, where optimization, uncertainty, and system behavior all matter at once. Lately, that's meant spending time on traffic mitigation using reinforcement learning, scheduling and resource allocation with ML, and deepening my understanding of numerical methods. I'm also increasingly curious about financial modeling, cryptography, quantum computing, and embedded systems, places where math has real consequences and very little slack.</p>
+
+                <p>At times, I feel more like a jack of many trades than a master of one. That’s partly a reflection of my curiosity — I tend to chase questions rather than titles. But I’ve come to see this phase as necessary. Spending time across domains has sharpened my sense for where depth actually matters, and where abstractions break down in practice.</p>
+
+                <p>Outside of work, I spend as much time outdoors as I can. I've lived in California my whole life (born in LA, now in Berkeley) and being outside has always been a way for me to reset and regain perspective. Long hikes, empty trails, and time away from screens tend to surface the best ideas.</p>
+
+                <p>This site is also a form of accountability. As I finish my coursework and move deeper into industry, I'm very aware of the temptation to get comfortable, the quiet pull of the "golden handcuffs," where things are good enough and growth slows. I don't want that. I want to keep asking hard questions, choosing problems that stretch me, and staying honest about what I don't yet understand.</p>
+
+                <p>I also have an interest in film. I plan to start blogging about the movies I watch — partly as an excuse to slow down and think more carefully about what I’m consuming.</p>
+
+                <p>Right now, I'm finishing my senior year at UC Berkeley, continuing research on traffic mitigation, and exploring the startup world more deeply. If any of this resonates, or if you just want to talk about optimization, systems, ML, physics, fantasy, or anything else, feel free to reach out. I'm always happy to talk.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer__container">
+            <p class="footer__copy">&copy; 2025 Bazil Ahmad</p>
+        </div>
+    </footer>
+</body>
+</html>
