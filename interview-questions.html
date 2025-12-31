@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Quant Interview Questions — Intuition, Animations & Proofs</title>
+    <!-- Math rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+    <style>
+        :root{
+            --bg:#0f1724;
+            --card:#0b1220;
+            --muted:#9aa4b2;
+            --accent:#7cc0ff;
+            --glass: rgba(255,255,255,0.03);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            color-scheme: dark;
+        }
+        html,body{height:100%;margin:0;background:linear-gradient(180deg,#071226 0%, var(--bg) 100%);color:#e6eef6;}
+        .app{display:flex;height:100vh;gap:18px;padding:18px;box-sizing:border-box}
+        .sidebar{width:300px;background:linear-gradient(180deg,rgba(255,255,255,0.02),var(--glass));border-radius:12px;padding:14px;box-shadow:0 6px 18px rgba(2,6,23,0.6);overflow:auto}
+        .sidebar h2{margin:6px 0 12px 0;font-size:16px}
+        .question-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+        .qitem{padding:10px;border-radius:8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;background:transparent}
+        .qitem:hover{background:rgba(255,255,255,0.02)}
+        .qitem.active{background:linear-gradient(90deg,rgba(124,192,255,0.06),rgba(124,192,255,0.02));box-shadow:inset 0 0 0 1px rgba(124,192,255,0.06)}
+        .main{flex:1;display:flex;flex-direction:column;gap:12px;overflow:auto}
+        .header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+        .title{font-size:18px;font-weight:600}
+        .controls{display:flex;gap:8px;align-items:center}
+        .btn{background:var(--accent);color:#052028;padding:8px 12px;border-radius:8px;border:none;cursor:pointer;font-weight:600}
+        .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), var(--card)); border-radius:12px;padding:16px;box-shadow:0 6px 14px rgba(2,6,23,0.5)}
+        .section{margin-bottom:12px}
+        .section h3{margin:0 0 8px 0;font-size:15px}
+        .flex{display:flex;gap:12px}
+        .col{flex:1}
+        .muted{color:var(--muted);font-size:13px}
+        details{background:rgba(255,255,255,0.01);padding:10px;border-radius:8px}
+        canvas{background:transparent;border-radius:8px}
+        .controls input[type="range"]{width:140px}
+        .small{font-size:13px;padding:6px 10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--muted)}
+        footer{opacity:0.8;color:var(--muted);font-size:13px;padding:10px 6px;text-align:center}
+        /* simple door styles for Monty Hall */
+        .doors{display:flex;gap:14px;align-items:flex-end;justify-content:center;margin-top:12px}
+        .door{width:120px;height:160px;background:#072033;border-radius:8px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;cursor:pointer;position:relative;box-shadow:0 6px 14px rgba(2,6,23,0.5)}
+        .door .label{position:absolute;top:8px;left:10px;color:var(--muted);font-weight:600}
+        .knob{width:20px;height:20px;border-radius:50%;background:gold;margin-bottom:12px}
+        .revealed{background:#153d2e}
+        .result{margin-top:12px;font-weight:700}
+        /* animation for walker */
+        .line{height:6px;background:linear-gradient(90deg,#123 0%, #246 100%);border-radius:6px;margin:18px 0;position:relative}
+        .walker{position:absolute;top:-12px;width:24px;height:24px;border-radius:50%;background:#ffb86b;display:flex;align-items:center;justify-content:center;font-weight:700;color:#072033;box-shadow:0 8px 14px rgba(0,0,0,0.4)}
+        /* responsive */
+        @media (max-width:900px){.sidebar{display:none}.app{padding:12px}}
+    </style>
+</head>
+<body>
+    <div class="app" role="application">
+        <aside class="sidebar" aria-label="Questions">
+            <h2>Questions</h2>
+            <ul id="questions" class="question-list">
+                <!-- Items inserted by JS -->
+            </ul>
+        </aside>
+
+        <main class="main">
+            <div class="header">
+                <div>
+                    <div class="title" id="q-title">Quant Interview Questions</div>
+                    <div class="muted" id="q-sub">Select a question from the left to explore intuition, animations and proofs.</div>
+                </div>
+                <div class="controls">
+                    <button id="reset" class="small">Reset</button>
+                </div>
+            </div>
+
+            <div id="content-area" class="card">
+                <!-- Question content injected here -->
+                <div id="empty" class="muted">No question selected. Click one from the side to load an interactive explanation template.</div>
+            </div>
+
+            <footer>
+                Template file: /Users/bazilahmad/BazilsWebsite/quant-questions.html — use this file to collect, animate and prove questions. Math rendered with MathJax.
+            </footer>
+        </main>
+    </div>
+
+<script>
+/*
+    INTERVIEW QUESTIONS TEMPLATE
+    ============================
+    To add a new question, copy this template and add it to the `questions` array below:
+
+    {
+        id: 'unique-id',           // unique identifier (no spaces)
+        title: 'Question Title',   // displayed in sidebar
+        problem: `                 // the problem statement (supports HTML)
+            Your problem description here...
+        `,
+        intuition: `               // intuitive explanation
+            Why the answer makes sense...
+        `,
+        proof: `                   // formal proof (supports LaTeX with \\[ \\] or \\( \\))
+            Mathematical proof here...
+            \\[ P(X) = \\frac{1}{2} \\]
+        `,
+        animationSetup: 'functionName'  // optional: name of animation function
+    }
+*/
+
+const contentArea = document.getElementById('content-area');
+const qlist = document.getElementById('questions');
+const titleEl = document.getElementById('q-title');
+const subEl = document.getElementById('q-sub');
+
+let questions = [
+    {
+        id: 'monty',
+        title: 'Monty Hall Problem',
+        problem: `
+            You are shown three closed doors. Behind one door is a car (prize), behind the others goats.
+            You pick a door. The host, who knows the hiding place, opens another door revealing a goat and offers you the chance to switch to the remaining closed door.
+            Should you switch?
+        `,
+        intuition: `
+            Intuition: your first pick has 1/3 chance of being correct. Host action gives information: if you initially picked a goat (2/3 chance),
+            the host's forced reveal leaves the car behind the remaining door — so switching wins with probability 2/3.
+        `,
+        proof: `
+            Proof: We can solve this two ways: by enumeration or Bayes' theorem. By enumeration, list all scenarios:
+            1. You pick car (1/3): host reveals goat, switching loses.
+            2. You pick goat A (1/3): host reveals goat B, switching wins car.
+            3. You pick goat B (1/3): host reveals goat A, switching wins car.
+            Thus switching wins in 2 of 3 equally likely scenarios, so P(win by switching) = 2/3.
+            Alternatively, by Bayes' theorem:
+            Let H_i = host opens door i, C_i = event car is behind door i. Say we were to pick some door (call it door 1). Symmetry implies that we can pin a specific door as our pick without loss of generality. 
+            We want P(C_2 | H_3), the probability car is behind door 2 given host opened door 3. [Note: this is the same as P(C_3 | H_2) by symmetry.]
+            By Bayes' theorem:
+            \\[
+                P(C_2 | H_3) = \\frac{P(H_3 | C_2) P(C_2)}{P(H_3 | C_1) P(C_1) + P(H_3 | C_2) P(C_2) + P(H_3 | C_3) P(C_3)}
+            \\]
+            We have P(C_i) = 1/3 for all i. Also, P(H_3 | C_1) = 1/2 (if car is behind door 1, host can open either door 2 or 3), P(H_3 | C_2) = 1 (if car is behind door 2, host must open door 3), and P(H_3 | C_3) = 0 (host won't open door with car). Plugging in:
+            \\[
+                P(C_2 | H_3) = \\frac{1 \\cdot \\frac{1}{3}}{\\frac{1}{2} \\cdot \\frac{1}{3} + 1 \\cdot \\frac{1}{3} + 0 \\cdot \\frac{1}{3}} = \\frac{\\frac{1}{3}}{\\frac{1}{6} + \\frac{1}{3}} = \\frac{\\frac{1}{3}}{\\frac{1}{2}} = \\frac{2}{3}
+            \\]
+        `,
+        animationSetup: 'setupMonty'
+    },
+    {
+        id: 'random-walk',
+        title: 'Simple Symmetric Random Walk (hitting origin)',
+        problem: `
+            Consider a symmetric simple random walk on integers starting at 1. Each step is +1 or -1 with equal probability.
+            What is the probability the walk ever hits 0? What is the expected time to hit 0?
+        `,
+        intuition: `
+            Intuition: for a 1D symmetric random walk starting at 1, the walk is recurrent — it will hit 0 with probability 1.
+            However the expected hitting time is infinite: occasionally it wanders far and takes arbitrarily long to return.
+        `,
+proof: `
+We study a simple symmetric random walk on the integers.
+
+Definitions.
+
+• The position of the walk at time n is a random variable S_n.
+• The walk starts at S_0 = 1.
+• At each step,
+  \\[
+  S_{n+1} = S_n + 1 \\text{ with probability } \\tfrac12,
+  \\quad
+  S_{n+1} = S_n - 1 \\text{ with probability } \\tfrac12.
+  \\]
+
+The walk can move on all integers (positive and negative).
+
+---
+
+Hitting time.
+
+Define the event
+\\[
+A_n := \\{ \\text{the walk has not hit 0 by time } n \\}.
+\\]
+
+Define the *hitting time of 0* as the random variable
+\\[
+\\tau := \\min\\{ n \\ge 0 : S_n = 0 \\}.
+\\]
+
+This means:
+• \\(\\tau = 5\\) if the walk first reaches 0 at step 5.
+• \\(\\tau = \\infty\\) if the walk never reaches 0.
+
+So the event
+\\[
+\\{ \\tau > n \\}
+\\]
+is exactly the same as the event
+\\[
+A_n = \\{ S_0 != 0, S_1 != 0, \\dots, S_n != 0 \\}.
+\\]
+
+---
+
+Part 1: Probability of ever hitting 0.
+
+Let
+\\[
+H := \\{ \\tau < \\infty \\}
+\\]
+be the event that the walk ever hits 0.
+
+Define
+\\[
+P_i := P(H \\mid S_0 = i),
+\\]
+the probability of ever hitting 0 when starting at position i.
+
+Clearly,
+\\[
+P_0 = 1
+\\]
+because the walk is already at 0.
+
+Now fix any i ≥ 1 and condition on the first step.
+
+From position i:
+• with probability 1/2 the walk moves to i − 1,
+• with probability 1/2 the walk moves to i + 1.
+
+After this first step, the future behavior of the walk is independent of the past and depends only on the new position. Therefore,
+\\[
+P_i
+= \\tfrac12 P_{i-1} + \\tfrac12 P_{i+1}.
+\\]
+
+Rewriting,
+\\[
+P_{i+1} - P_i = P_i - P_{i-1}.
+\\]
+
+This means the difference between successive terms is constant, so P_i is a linear function of i:
+\\[
+P_i = a + b i.
+\\]
+
+Using the boundary condition P_0 = 1 gives a = 1, so
+\\[
+P_i = 1 + b i.
+\\]
+
+Because probabilities must satisfy
+\\[
+0 \\le P_i \\le 1 \\quad \\text{for all } i \\ge 0,
+\\]
+the only possible value is b = 0.
+
+Hence,
+\\[
+P_i = 1 \\quad \\text{for all } i \\ge 0.
+\\]
+
+In particular,
+\\[
+P(H \\mid S_0 = 1) = 1.
+\\]
+
+So the walk hits 0 with probability 1.
+
+---
+
+Part 2: Expected time to hit 0.
+
+We now study how long it takes.
+
+Define the expected hitting time:
+\\[
+E := \\mathbb E[\\tau \\mid S_0 = 1].
+\\]
+
+Recall the definition of tail-sum expectation:
+\\begin{align}
+\\mathbb E[X] &= \\sum_{k=0}^{\\infty} k \\cdot P(X = k) \\tag{1} \\\\
+&= \\sum_{k=0}^{\\infty} \\sum_{n=0}^{k-1} P(X = k) \\tag{2} \\\\
+&= \\sum_{n=0}^{\\infty} \\sum_{k=n+1}^{\\infty} P(X = k) \\tag{3}
+\\end{align}
+We are able to swap the order of summation because all terms are nonnegative. Particularly in equation 2, we can envision a 2D grid where the rows correspond to n and the columns correspond to k. Each cell in the grid contains the nonnegative term P(X = k). The double sum in equation 2 sums over all cells above the main diagonal (where k > n). By changing the order of summation, we can instead sum over columns first (equation 3), which still covers the same set of cells above the diagonal. Since all terms are nonnegative, this rearrangement does not affect the convergence or value of the sum.
+We can then write:
+\\[
+\\sum_{k=n+1}^{\\infty} P(X = k) = P(X > n)
+\\]
+Thus we have the tail-sum formula:,
+\\[
+E = \\sum_{n=0}^{\\infty} P(X > n).
+\\]
+Because \\(\\tau\\) is a nonnegative integer-valued random variable, we are allowed to use the tail-sum formula for expectation here. We can just append our conditional back on and get:
+\\[
+E
+= \\sum_{n=0}^{\\infty} P(\\tau > n \\mid S_0 = 1).
+\\]
+
+So the expected time is infinite if the probabilities
+\\[
+P(\\tau > n \\mid S_0 = 1)
+\\]
+do not go to zero fast enough.
+
+---
+
+Why negative integers do not matter.
+
+The event \\(\\{\\tau > n\\}\\) depends only on whether the walk has hit 0.
+The walk is allowed to move freely on negative integers *after* hitting 0, but we stop the clock the moment it reaches 0 for the first time.
+
+So:
+• Negative integers are allowed,
+• But they only matter *after* hitting 0,
+• And hitting 0 ends the process.
+
+Thus, for the event \\(\\tau > n\\), the walk must stay strictly positive up to time n.
+
+---
+
+Lower bound on survival probability.
+
+We now explain why
+\\[
+P(\\tau > n \\mid S_0 = 1)
+\\]
+is not too small.
+
+In one dimension, a symmetric random walk spreads out slowly.
+After n steps, the typical distance from the starting point is about √n.
+
+Starting from 1, this means:
+• It is common for the walk to drift upward to heights on the order of √n,
+• From such heights, it takes many steps to come back down to 0.
+
+As a result, there is a fixed constant c > 0 such that for all large n,
+\\[
+P(\\tau > n \\mid S_0 = 1) \\ge \\frac{c}{\\sqrt{n}}.
+\\]
+
+Here:
+• c is just a positive constant (its exact value does not matter),
+• It represents the fact that a non-negligible fraction of paths wander upward far enough to avoid 0 for n steps.
+
+No exact formula is needed — only the qualitative fact that the walk diffuses at rate √n.
+
+---
+
+Conclusion: divergence of the expectation.
+
+Using the lower bound,
+\\[
+E
+= \\sum_{n=0}^{\\infty} P(\\tau > n \\mid S_0 = 1)
+\\ge \\sum_{n=1}^{\\infty} \\frac{c}{\\sqrt{n}}.
+\\]
+
+But
+\\[
+\\sum_{n=1}^{\\infty} \\frac{1}{\\sqrt{n}} = \\infty.
+\\]
+
+Therefore,
+\\[
+\\mathbb E[\\tau \\mid S_0 = 1] = \\infty.
+\\]
+
+---
+
+Final result.
+
+• The walk hits 0 with probability 1  
+• The expected time to hit 0 is infinite  
+
+The walk always returns — but sometimes it takes arbitrarily long.
+`
+,
+
+        animationSetup: 'setupRandomWalk'
+    }
+];
+
+// render question list
+function renderList() {
+    qlist.innerHTML = '';
+    for(const q of questions){
+        const li = document.createElement('li');
+        li.className = 'qitem';
+        li.dataset.id = q.id;
+        li.innerHTML = `
+            <div>
+                <div style="font-weight:700">${q.title}</div>
+                <div class="muted" style="font-size:12px">${(q.problem||'').slice(0,80).replace(/\n/g,' ')}...</div>
+            </div>
+            <div class="muted" style="font-size:12px">Open</div>
+        `;
+        li.addEventListener('click', ()=> loadQuestion(q.id, li));
+        qlist.appendChild(li);
+    }
+}
+renderList();
+
+function clearActive() {
+    document.querySelectorAll('.qitem').forEach(el=>el.classList.remove('active'));
+}
+
+function loadQuestion(id, liEl){
+    clearActive();
+    if(liEl) liEl.classList.add('active');
+    const q = questions.find(x=>x.id===id);
+    if(!q) return;
+    titleEl.textContent = q.title;
+    subEl.textContent = q.problem.split('\\n')[0].slice(0,120);
+
+    // Build content
+    contentArea.innerHTML = '';
+    const problemCard = el('div','card section',`<h3>Problem</h3><div class="muted">${q.problem.replace(/\\n/g,'<br>')}</div>`);
+    const intCard = el('div','card section',`<h3>Intuition</h3><div>${q.intuition.replace(/\\n/g,'<br>')}</div>`);
+    const animCard = el('div','card section',`<h3>Interactive visualization</h3><div id="viz-${q.id}"></div>`);
+    const proofCard = el('div','card section',`<h3>Proof / Explanation</h3><div>${q.proof.replace(/\\n/g,'<br>')}</div>`);
+
+    contentArea.appendChild(problemCard);
+    contentArea.appendChild(intCard);
+    contentArea.appendChild(animCard);
+    contentArea.appendChild(proofCard);
+
+    // render math
+    if(window.MathJax) MathJax.typesetPromise();
+
+    // call animation setup if provided
+    if(q.animationSetup && typeof window[q.animationSetup] === 'function'){
+        try { window[q.animationSetup](document.getElementById('viz-'+q.id)); }
+        catch(e){ console.error(e); document.getElementById('viz-'+q.id).innerText = 'Failed to initialize visualization.'; }
+    } else {
+        document.getElementById('viz-'+q.id).innerHTML = '<div class="muted">No visualization provided for this question yet. Use the template to add one.</div>';
+    }
+}
+
+/* Utility: short element factory */
+function el(tag, cls, innerHTML){
+    const d = document.createElement(tag);
+    if(cls) d.className = cls;
+    if(innerHTML) d.innerHTML = innerHTML;
+    return d;
+}
+
+/* --- Monty Hall interactive --- */
+function setupMonty(container){
+    container.innerHTML = '';
+    const controls = el('div','flex',`
+        <div style="flex:1">
+            <div class="muted" style="margin-bottom:6px">Choose a door, then watch the host reveal one.</div>
+        </div>
+    `);
+    const area = el('div','','');
+    area.innerHTML = `
+        <div class="doors" id="doors">
+            <div class="door" data-i="0"><div class="label">Door 1</div><div class="knob"></div></div>
+            <div class="door" data-i="1"><div class="label">Door 2</div><div class="knob"></div></div>
+            <div class="door" data-i="2"><div class="label">Door 3</div><div class="knob"></div></div>
+        </div>
+        <div style="text-align:center;margin-top:10px">
+            <button class="small" id="btn-reset">New Round</button>
+            <button class="small" id="btn-switch">Switch</button>
+            <button class="small" id="btn-stay">Stay</button>
+            <div class="result" id="monty-result"></div>
+            <div class="muted" style="margin-top:8px;font-size:13px">Keep statistics: <span id="wins">0</span> wins / <span id="trials">0</span> trials (switch wins: <span id="switchWins">0</span>)</div>
+        </div>
+    `;
+    container.appendChild(controls);
+    container.appendChild(area);
+
+    const doorsEl = container.querySelectorAll('.door');
+    const resultEl = container.querySelector('#monty-result');
+    const btnReset = container.querySelector('#btn-reset');
+    const btnSwitch = container.querySelector('#btn-switch');
+    const btnStay = container.querySelector('#btn-stay');
+    const statWins = container.querySelector('#wins');
+    const statTrials = container.querySelector('#trials');
+    const statSwitchWins = container.querySelector('#switchWins');
+
+    let state = {prize:0, pick:null, revealed:null, finished:false};
+    let stats = {wins:0,trials:0,switchWins:0};
+
+    function newRound(){
+        state.prize = Math.floor(Math.random()*3);
+        state.pick = null; state.revealed = null; state.finished=false;
+        resultEl.textContent = '';
+        doorsEl.forEach(d=>{
+            d.classList.remove('revealed');
+            d.querySelector('.knob').style.background = 'gold';
+        });
+    }
+
+    function revealHost(){
+        // host reveals a goat door that's not picked and not prize
+        const choices = [];
+        for(let i=0;i<3;i++){
+            if(i===state.pick) continue;
+            if(i===state.prize) continue;
+            choices.push(i);
+        }
+        // If pick is prize, host picks randomly among other two
+        if(choices.length===0){
+            for(let i=0;i<3;i++) if(i!==state.pick) choices.push(i);
+        }
+        const reveal = choices[Math.floor(Math.random()*choices.length)];
+        state.revealed = reveal;
+        const d = [...doorsEl].find(x=>+x.dataset.i===reveal);
+        d.classList.add('revealed');
+        d.querySelector('.knob').style.background = '#444';
+    }
+
+    function finalize(switchChoice){
+        if(state.finished) return;
+        state.finished = true;
+        // determine final selected door
+        let finalPick = state.pick;
+        if(switchChoice){
+            // switch to the other unopened door
+            for(let i=0;i<3;i++){
+                if(i!==state.pick && i!==state.revealed){ finalPick = i; break; }
+            }
+        }
+        // reveal all
+        doorsEl.forEach(d=>{
+            const i = +d.dataset.i;
+            if(i===state.prize) d.querySelector('.knob').style.background = '#3fe58a';
+            if(i===finalPick) d.style.outline = '3px solid rgba(124,192,255,0.22)';
+        });
+        const win = finalPick===state.prize;
+        resultEl.textContent = win ? 'You won the car!' : 'You got a goat.';
+        stats.trials++;
+        if(win) stats.wins++;
+        if(switchChoice){
+            if(win) stats.switchWins++;
+        }
+        statWins.textContent = stats.wins;
+        statTrials.textContent = stats.trials;
+        statSwitchWins.textContent = stats.switchWins;
+    }
+
+    // door click: choose
+    doorsEl.forEach(d=>{
+        d.addEventListener('click', ()=>{
+            if(state.finished) return;
+            const i = +d.dataset.i;
+            state.pick = i;
+            // highlight
+            doorsEl.forEach(x=>x.style.boxShadow='0 6px 14px rgba(2,6,23,0.5)');
+            d.style.boxShadow = '0 12px 28px rgba(124,192,255,0.12)';
+            revealHost();
+        });
+    });
+
+    btnReset.addEventListener('click', newRound);
+    btnSwitch.addEventListener('click', ()=>{ finalize(true); });
+    btnStay.addEventListener('click', ()=>{ finalize(false); });
+
+    newRound();
+}
+
+/* --- Random walk animation --- */
+function setupRandomWalk(container){
+    container.innerHTML = '';
+    const controls = el('div','flex',`
+        <div style="flex:1">
+            <div class="muted">Simulate symmetric random walk starting at 1. Adjust speed and run multiple trials to observe distribution of hitting times.</div>
+        </div>
+    `);
+    const area = el('div','','');
+    area.innerHTML = `
+        <div style="display:flex;gap:12px;align-items:center">
+            <label class="muted">Speed</label><input id="speed" type="range" min="50" max="1000" value="300">
+            <button class="small" id="run">Run step</button>
+            <button class="small" id="auto">Auto run</button>
+            <button class="small" id="stop">Stop</button>
+            <div class="muted" id="status">Steps: 0 | Position: 1</div>
+        </div>
+        <div style="margin-top:12px">
+            <div class="line" id="line" style="height:8px">
+                <div class="walker" id="walker">1</div>
+            </div>
+        </div>
+        <div style="margin-top:8px" class="muted">Note: recurrence is guaranteed; expected hitting time is heavy-tailed (infinite).</div>
+    `;
+    container.appendChild(controls);
+    container.appendChild(area);
+
+    const walker = container.querySelector('#walker');
+    const status = container.querySelector('#status');
+    const speed = container.querySelector('#speed');
+    const run = container.querySelector('#run');
+    const auto = container.querySelector('#auto');
+    const stop = container.querySelector('#stop');
+
+    let pos = 1;
+    let steps = 0;
+    let timer = null;
+    const mid = 200; // visible midpoint in px
+    const scale = 12; // px per integer
+
+    function render(){
+        walker.style.left = (mid + (pos-1)*scale) + 'px';
+        walker.textContent = pos;
+        status.textContent = `Steps: ${steps} | Position: ${pos}`;
+    }
+
+    function step(){
+        const r = Math.random() < 0.5 ? -1 : 1;
+        pos += r;
+        steps++;
+        render();
+        // check hit
+        if(pos<=0){
+            if(timer) clearInterval(timer);
+            timer = null;
+            status.textContent += ' — hit 0!';
+        }
+    }
+
+    run.addEventListener('click', step);
+    auto.addEventListener('click', ()=>{
+        if(timer) return;
+        timer = setInterval(step, +speed.value);
+    });
+    stop.addEventListener('click', ()=>{
+        if(timer) clearInterval(timer);
+        timer = null;
+    });
+    speed.addEventListener('input', ()=>{
+        if(timer){
+            clearInterval(timer);
+            timer = setInterval(step, +speed.value);
+        }
+    });
+
+    // initial render
+    pos = 1; steps=0; render();
+}
+
+/* Buttons */
+document.getElementById('reset').addEventListener('click', ()=>{
+    // reset stats and UI
+    location.reload();
+});
+
+/* initial state: load first question */
+if(questions.length) {
+    // highlight first item after rendering list
+    const first = qlist.querySelector('.qitem');
+    if(first) first.click();
+}
+</script>
+</body>
+</html>

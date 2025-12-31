@@ -1,51 +1,318 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Traffic Mitigation Research | Bazil Ahmad</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Traffic Mitigation Research | Bazil Ahmad</title>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
 
-    <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="nav">
-        <div class="nav__container">
-            <a href="index.html" class="nav__logo">~/bazil</a>
-            <ul class="nav__links">
-                <li><a href="index.html#projects" class="nav__link">projects</a></li>
-                <li><a href="index.html#research" class="nav__link">research</a></li>
-                <li><a href="index.html#cv" class="nav__link">cv</a></li>
-                <li><a href="index.html#interests" class="nav__link">interests</a></li>
-                <li><a href="index.html#now" class="nav__link">now</a></li>
-            </ul>
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav__container">
+      <a href="index.html" class="nav__logo">~/bazil</a>
+      <ul class="nav__links">
+        <li><a href="index.html#projects" class="nav__link">projects</a></li>
+        <li><a href="index.html#research" class="nav__link">research</a></li>
+        <li><a href="index.html#cv" class="nav__link">cv</a></li>
+        <li><a href="index.html#interests" class="nav__link">interests</a></li>
+        <li><a href="index.html#now" class="nav__link">now</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="project-page">
+    <div class="project-page__container">
+      <a href="index.html#projects" class="project-page__back">back to projects</a>
+
+      <h2 class="project-page__title">Traffic Mitigation Research</h2>
+
+      <p class="project-page__description">
+        This is a continuation of the work I did in EECS149. While it may never be published, I find traffic to be a fascinating
+        problem and I’m mainly doing this to understand when learning helps (and when it breaks) in safety-critical control.
+        Maybe one day, the 405 will be rid of traffic. <br />
+        I’m blogging progress here as a way to keep the scope honest, the protocol reproducible, and my thoughts organized.
+      </p>
+
+      <h2 class="blog-heading">Dec 30, 2025 [Finalizing scope, metrics, and decision rules]</h2>
+
+      <section class="project-page__section">
+        <h3 class="project-page__section-title">&gt; goal (what question am I answering?)</h3>
+        <div class="project-page__thoughts">
+          <p>
+            Build a small, repeatable benchmark that compares <em>structured control</em> vs <em>learned control</em> for traffic
+            smoothing under realistic deployment constraints.
+          </p>
+          <p>
+            The concrete question: <br />
+            <em>
+              Across congestion and latency regimes, which controller family achieves the best safety–throughput tradeoff, and where
+              do learned policies outperform structured control (or fail)?
+            </em>
+          </p>
         </div>
-    </nav>
+      </section>
 
-    <main class="project-page">
-        <div class="project-page__container">
-            <a href="index.html#projects" class="project-page__back">back to projects</a>
+      <section class="project-page__section">
+        <h3 class="project-page__section-title">&gt; scenario (frozen benchmark setup)</h3>
+        <div class="project-page__thoughts">
+          <p>
+            Primary scenario: <strong>single-lane ring road</strong> (closed loop). This isolates stop-and-go dynamics without boundary effects.
+          </p>
 
-            <h2 class="project-page__title">Traffic Mitigation Research</h2>
-        
-            <p class="project-page__description">
-                This is a continuation of the work I did in EECS149. While it may never be published, I find traffic to be a fascinating problem and am mainly doing this to see how different learning paradigms can impact optimal policies. Maybe one day, the 405 will be rid of traffic 😑 🙏🏾. <br>
-                I hope to just blog here on what I've accomplished, mainly as a way to keep a clean repo of the project and my thoughts. 
-            </p>
+          <ul>
+            <li><strong>Road:</strong> 1 lane, circular track of fixed circumference <code>L</code>.</li>
+            <li><strong>Congestion knob:</strong> vehicle density via <code>N</code> (number of cars). Evaluate at <code>N ∈ {N_low, N_mid, N_high}</code>.</li>
+            <li><strong>Initial conditions:</strong> cars evenly spaced with small perturbations in spacing and speed (to seed waves).</li>
+            <li><strong>AV penetration:</strong> evaluate at <code>p_av ∈ {0%, 10%, 30%, 50%}</code>. AVs placed evenly around the ring (fixed placement rule).</li>
+            <li><strong>Episode length:</strong> fixed horizon <code>T</code> (or terminate early on collision / min-gap breach).</li>
+          </ul>
 
-    <h3 class = "blog-heading">Dec 30, 2025 [Finalizing metrics and direction]</h3>
+          <p>
+            Optional later extension (not in v1): open highway with an arrival process and merges. I’m not starting there because it adds boundary-driven confounders.
+          </p>
+        </div>
+      </section>
+
+      <section class="project-page__section">
+        <h3 class="project-page__section-title">&gt; human driving model (realistic, minimal, not “psychology”)</h3>
+        <div class="project-page__thoughts">
+          <p>
+            Human-driven vehicles are modeled as IDM controllers with three realism ingredients. The goal is to generate realistic
+            waves and rare disturbances without turning modeling into an open-ended behavioral science problem.
+          </p>
+
+          <ol>
+            <li>
+              <strong>Population heterogeneity (static):</strong> each human samples IDM parameters from distributions
+              (e.g., desired speed, time headway, braking aggressiveness). This alone creates nontrivial instability.
+            </li>
+            <li>
+              <strong>Temporally correlated variability (dynamic):</strong> apply a low-amplitude Ornstein–Uhlenbeck (OU) process
+              to desired speed <code>v0(t)</code> (or acceleration). This yields “drift/hesitation” rather than i.i.d. randomness.
+            </li>
+            <li>
+              <strong>Reaction time:</strong> humans respond with a small delay to the lead vehicle state (finite reaction time).
+            </li>
+          </ol>
+
+          <p>
+            Stretch goal: a small “distracted driver” mode with rare short windows of increased reaction time (to simulate occlusion / attention lapses).
+          </p>
+        </div>
+      </section>
+
+      <section class="project-page__section">
+        <h3 class="project-page__section-title">&gt; uncertainty knobs (Waymo/Tesla-like realism)</h3>
+        <div class="project-page__thoughts">
+          <p>
+            I assume high-quality sensing (small measurement error), but I explicitly model the deployment issues that remain even in
+            state-of-the-art stacks: latency, jitter, asynchronous updates, actuator dynamics, and occasional dropouts.
+          </p>
+
+          <ul>
+            <li><strong>Control latency:</strong> delay between decision and applied acceleration (<code>τ_control</code> timesteps).</li>
+            <li><strong>Perception delay / update rate:</strong> state updates arrive at lower rate than control; optionally add small jitter.</li>
+            <li><strong>Actuator lag:</strong> acceleration follows commands with first-order lag (finite response time).</li>
+            <li><strong>Observation dropout:</strong> rare short bursts of missing lead state (tracking loss / occlusion proxy).</li>
+            <li><strong>V2V latency + packet loss (if comms used):</strong> upstream braking signals arrive late or occasionally missing.</li>
+          </ul>
+
+          <p>
+            Note: I am <em>not</em> injecting large sensor noise. If I include measurement noise at all, it will be small and structured
+            (bias + low variance), primarily to test near-boundary robustness.
+          </p>
+        </div>
+      </section>
+
+      <section class="project-page__section">
+  <h3 class="project-page__section-title">&gt; no adversarial drivers (v1 design choice)</h3>
+  <div class="project-page__thoughts">
+
+    <p>
+      I am not including a front adversarial drivers in this version of the project (as I did for 149). This is a v1 design choice to keep the scope manageable and focus on the core problem: how to make a structured controller robust under realistic uncertainty.
+    </p>
+
+    </div>
+    </section>
+
+      <section class="project-page__section">
+        <h2 class="project-page__section-title">&gt; controllers (what I’m comparing)</h2>
+        <div class="project-page__thoughts">
+          <p>
+            I’m comparing one strong structured baseline against learned policies with discrete and (optionally) continuous action spaces.
+          </p>
+
+          <ul>
+            <li>
+              <strong>Structured baseline:</strong> IDM + event-driven FSM + conservative V2V braking propagation (upstream braking can influence deceleration, never override local safety).
+            </li>
+            <li>
+              <strong>Learned (discrete):</strong> DQN policy with discretized acceleration actions (embedded-feasible, but potentially brittle near safety boundaries).
+            </li>
+            <li>
+              <strong>Learned (continuous) [optional]:</strong> one continuous-control method (e.g., DDPG/SAC-style) to test whether action discretization is a major confounder.
+            </li>
+          </ul>
+
+          <p>
+            All controllers are evaluated on the <em>same</em> scenario distribution and under the <em>same</em> uncertainty knobs.
+          </p>
+        </div>
+      </section>
+
+      <section class="project-page__section">
+        <h2 class="project-page__section-title">&gt; metrics (what I measure)</h2>
+        <div class="project-page__thoughts">
+          <p>
+            Metrics are chosen to prevent “cheating” (e.g., being safe by driving extremely slowly) while still reflecting what matters in traffic:
+            safety first, then throughput, then stability/comfort.
+          </p>
+
+          <ul>
+            <li>
+              <strong>Safety (primary):</strong>
+              collision rate (or min-gap breach), TTC violation rate under threshold <code>TTC &lt; τ</code>, and minimum-TTC statistics (e.g., 5th percentile).
+            </li>
+            <li>
+              <strong>Throughput (primary):</strong>
+              average fleet speed over the episode (or flow if I later add an arrival process).
+            </li>
+            <li>
+              <strong>Stability / wave suppression (supporting):</strong>
+              speed variance over time (captures stop-and-go amplitude).
+            </li>
+            <li>
+              <strong>Comfort (supporting):</strong>
+              jerk proxy (e.g., mean absolute change in acceleration per timestep).
+            </li>
+          </ul>
+
+          <p>
+            For plots, I will primarily report <strong>safety–throughput frontiers</strong>, and use stability/comfort to explain failure modes.
+          </p>
+        </div>
+      </section>
+
+      <section class="project-page__section">
+        <h2 class="project-page__section-title">&gt; decision rule (what it means to “beat” another controller)</h2>
+        <div class="project-page__thoughts">
+          <p>
+            The comparison is deliberately strict. Safety violations are disqualifying. I’m not ranking by reward; I’m ranking by constraints and outcomes.
+          </p>
+
+          <ol>
+            <li>
+              <strong>Safety gate (must pass):</strong> a controller is considered valid in a regime only if it satisfies explicit safety constraints
+              (e.g., collision rate ≤ a fixed threshold across evaluation episodes, and TTC violations below a threshold).
+            </li>
+            <li>
+              <strong>Throughput ranking (among safe controllers):</strong> among controllers that pass the safety gate, higher throughput wins
+              (average fleet speed, reported with confidence intervals across seeds).
+            </li>
+            <li>
+              <strong>Stability/comfort as tie-breaker + explanation:</strong> if throughput is similar, prefer lower speed variance and lower jerk.
+              These metrics are also used to explain <em>how</em> a controller achieves its performance.
+            </li>
+          </ol>
+
+          <p>
+            Result format: for each (congestion, latency) regime, label the winner and summarize why (safe + faster, or unsafe, or stable/unstable).
+          </p>
+        </div>
+      </section>
+
+      <section class="project-page__section">
+        <h2 class="project-page__section-title">&gt; success criteria (simple and testable)</h2>
+        <div class="project-page__thoughts">
+          <p>
+            This thread is successful if I produce:
+          </p>
+          <ul>
+            <li>
+              <strong>One safety–throughput frontier plot</strong> comparing structured control vs learned control across a small grid of realistic latency and congestion regimes, and
+            </li>
+            <li>
+              <strong>One regime map</strong> that clearly shows where learned policies are competitive (pass safety + win on throughput) and where they fail (safety violations or instability).
+            </li>
+          </ul>
+          <p>
+            That’s it. The goal is not complexity; the goal is an honest, repeatable benchmark that reveals tradeoffs.
+          </p>
+        </div>
+      </section>
+
+      <section class="project-page__section">
+        <h2 class="project-page__section-title">&gt; next steps (v1 checklist)</h2>
+        <div class="project-page__thoughts">
+          <ol>
+            <li>Implement the ring-road simulator + logging (gap, rel-vel, TTC, accel, jerk proxy).</li>
+            <li>Implement knobs for latency and error.</li>
+            <li>Start with all humans with no V2V communication and no latency/error. Generate plots. This is the true baseline.</li>
+            <li>Create and evaluate the how well the <a href="assets/EECS149_Final_Project_Report (2) (3).pdf"> FSM+IDM with V2V approach </a> performs (with different uncertainty knob settings) against the baseline of all humans. <br><img src="assets/FSM.drawio(7).png" alt="FSM Logic"></li>
+
+            
+          </ol>
+        </div>
+      </section>
+
+<h2 class="blog-heading">Dec 31, 2025 [Baseline + observability]</h2>
+<section class="project-page__section">
+  <h3 class="project-page__section-title">&gt; progress</h3>
+  <div class="project-page__thoughts">
+    <p>
+      Implemented the ring-road simulator with IDM human drivers, including population heterogeneity,
+      OU-based temporal variability, and finite reaction times. Verified that stop-and-go waves emerge
+      naturally at higher densities without any scripted disturbances.
+    </p>
+    <p>
+      Added full metric logging (TTC, min-gap, speed variance, jerk) and validated correctness via
+      per-episode trace plots. Established the true baseline: all-human traffic with no V2V,
+      no latency, and no actuator lag.
+    </p>
+    <p>
+      Next step: introduce structured latency and actuator dynamics to ensure metrics degrade
+      smoothly and realistically before adding any AV controllers.
+    </p>
+  </div>
+</section>
 
 
-    <!-- Footer -->
-    <footer class="footer">
+<h2 class="blog-heading">Jan 1, 2026 [Structured control under uncertainty]</h2>
+<section class="project-page__section">
+  <h3 class="project-page__section-title">&gt; progress</h3>
+  <div class="project-page__thoughts">
+    <p>
+      Integrated the FSM+IDM controller and validated behavior under nominal conditions.
+      Enabled conservative V2V braking propagation and compared against the all-human baseline
+      at matched densities.
+    </p>
+    <p>
+      Began evaluating robustness by introducing control latency and actuator lag.
+      The structured controller degrades gracefully under increasing delay,
+      establishing a strong baseline for later comparison with learned policies.
+    </p>
+  </div>
+</section>
+
+
+
+      <!-- Footer -->
+      <footer class="footer">
         <div class="footer__container">
-            <p class="footer__copy">&copy; 2025 Bazil Ahmad</p>
+          <p class="footer__copy">&copy; 2025 Bazil Ahmad</p>
         </div>
-    </footer>
+      </footer>
+    </div>
+  </main>
 </body>
 </html>
