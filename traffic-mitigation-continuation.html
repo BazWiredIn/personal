@@ -271,9 +271,9 @@
   <h3 class="project-page__section-title">&gt; progress</h3>
   <div class="project-page__thoughts">
     <p>
-      Implemented the ring-road simulator with IDM human drivers, including population heterogeneity,
-      OU-based temporal variability, and finite reaction times. Verified that stop-and-go waves emerge
-      naturally at higher densities without any scripted disturbances.
+      Implemented the ring-road simulator with IDM human drivers,
+      OU-based temporal variability, and human-like reaction times. Verified that stop-and-go waves emerge
+      naturally at higher densities without any scripted disturbances. I also decided to sample driving parameters for each car using gaussian distributions.
     </p>
     <p>
       Added full metric logging (TTC, min-gap, speed variance, jerk) and validated correctness via
@@ -281,8 +281,315 @@
       no latency, and no actuator lag.
     </p>
     <p>
-      Next step: introduce structured latency and actuator dynamics to ensure metrics degrade
-      smoothly and realistically before adding any AV controllers.
+      Next step: Introduce human IDM heterogeneity, with the FSM+IDM controller with "perfect" conditions.
+    </p>
+  </div>
+</section>
+
+<section class="project-page__section">
+  <h3 class="project-page__section-title">&gt; results</h3>
+
+  <details class="results-collapsible">
+    <summary class="results-collapsible__trigger">
+      View simulation results, plots, and parameters
+    </summary>
+
+    <div class="results-collapsible__content">
+
+      <!-- 25 Cars Section -->
+      <div class="results-density-section">
+        <h4>25 Humans (300m track)</h4>
+
+        <div class="results-video-grid">
+          <video controls preload="metadata">
+            <source src="assets/traffic-continuation/dec31/25-video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+
+        <div class="results-plots-grid">
+          <figure>
+            <img src="assets/traffic-continuation/dec31/25-heatmap.png" alt="Heatmap visualization for 25 cars on 300m track">
+            <figcaption>Heatmap</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/traffic-continuation/dec31/25-metrics.png" alt="Metrics for 25 cars: Speed Variance, Min Gap, Min TTC, Avg Speed over time">
+            <figcaption>Metrics (Speed Var, Min Gap, Min TTC, Avg Speed)</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <!-- 20 Cars Section -->
+      <div class="results-density-section">
+        <h4>20 Humans (300m track)</h4>
+
+        <div class="results-plots-grid">
+          <figure>
+            <img src="assets/traffic-continuation/dec31/20-heatmap.png" alt="Heatmap visualization for 20 cars on 300m track">
+            <figcaption>Heatmap</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/traffic-continuation/dec31/20-metrics.png" alt="Metrics for 20 cars: Speed Variance, Min Gap, Min TTC, Avg Speed over time">
+            <figcaption>Metrics (Speed Var, Min Gap, Min TTC, Avg Speed)</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <!-- 15 Cars Section -->
+      <div class="results-density-section">
+        <h4>15 Humans (300m track)</h4>
+
+        <div class="results-plots-grid">
+          <figure>
+            <img src="assets/traffic-continuation/dec31/15-heatmap.png" alt="Heatmap visualization for 15 cars on 300m track">
+            <figcaption>Heatmap</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/traffic-continuation/dec31/15-metrics.png" alt="Metrics for 15 cars: Speed Variance, Min Gap, Min TTC, Avg Speed over time">
+            <figcaption>Metrics (Speed Var, Min Gap, Min TTC, Avg Speed)</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <!-- 10 Cars Section -->
+      <div class="results-density-section">
+        <h4>10 Humans (300m track)</h4>
+
+        <div class="results-video-grid">
+          <video controls preload="metadata">
+            <source src="assets/traffic-continuation/dec31/10-video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+
+        <div class="results-plots-grid">
+          <figure>
+            <img src="assets/traffic-continuation/dec31/10-heatmap.png" alt="Heatmap visualization for 10 cars on 300m track">
+            <figcaption>Heatmap</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/traffic-continuation/dec31/10-metrics.png" alt="Metrics for 10 cars: Speed Variance, Min Gap, Min TTC, Avg Speed over time">
+            <figcaption>Metrics (Speed Var, Min Gap, Min TTC, Avg Speed)</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <!-- Parameters Table -->
+      <div class="results-params">
+        <h4>Simulation Parameters</h4>
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Value</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="3" style="color: var(--accent-cyan); font-weight: 600; background: rgba(0,255,213,0.03);">Ring Geometry</td></tr>
+            <tr>
+              <td><code>circumference</code></td>
+              <td>300 m</td>
+              <td>Ring road length</td>
+            </tr>
+            <tr>
+              <td><code>vehicle_length</code></td>
+              <td>5 m</td>
+              <td>Vehicle length</td>
+            </tr>
+            <tr><td colspan="3" style="color: var(--accent-cyan); font-weight: 600; background: rgba(0,255,213,0.03);">IDM Parameters</td></tr>
+            <tr>
+              <td><code>v0</code></td>
+              <td>25 m/s</td>
+              <td>Desired velocity</td>
+            </tr>
+            <tr>
+              <td><code>T</code></td>
+              <td>1.5 s</td>
+              <td>Safe time headway</td>
+            </tr>
+            <tr>
+              <td><code>s0</code></td>
+              <td>2 m</td>
+              <td>Minimum gap</td>
+            </tr>
+            <tr>
+              <td><code>a</code></td>
+              <td>1.5 m/s&sup2;</td>
+              <td>Max acceleration</td>
+            </tr>
+            <tr>
+              <td><code>b</code></td>
+              <td>2.0 m/s&sup2;</td>
+              <td>Comfortable deceleration</td>
+            </tr>
+            <tr>
+              <td><code>delta</code></td>
+              <td>4</td>
+              <td>Acceleration exponent</td>
+            </tr>
+            <tr><td colspan="3" style="color: var(--accent-cyan); font-weight: 600; background: rgba(0,255,213,0.03);">IDM Heterogeneity (per-driver sampling)</td></tr>
+            <tr>
+              <td><code>v0_std</code></td>
+              <td>3.0 m/s</td>
+              <td>Desired velocity std dev</td>
+            </tr>
+            <tr>
+              <td><code>T_std</code></td>
+              <td>0.3 s</td>
+              <td>Time headway std dev</td>
+            </tr>
+            <tr>
+              <td><code>a_std</code></td>
+              <td>0.3 m/s&sup2;</td>
+              <td>Max acceleration std dev</td>
+            </tr>
+            <tr>
+              <td><code>b_std</code></td>
+              <td>0.3 m/s&sup2;</td>
+              <td>Comfortable decel std dev</td>
+            </tr>
+            <tr><td colspan="3" style="color: var(--accent-cyan); font-weight: 600; background: rgba(0,255,213,0.03);">Temporal Variability (OU Process)</td></tr>
+            <tr>
+              <td><code>ou_theta</code></td>
+              <td>0.1</td>
+              <td>Mean reversion rate (1/s)</td>
+            </tr>
+            <tr>
+              <td><code>ou_sigma</code></td>
+              <td>0.02</td>
+              <td>Volatility (fraction of v0)</td>
+            </tr>
+            <tr><td colspan="3" style="color: var(--accent-cyan); font-weight: 600; background: rgba(0,255,213,0.03);">Simulation Timing</td></tr>
+            <tr>
+              <td><code>dt</code></td>
+              <td>0.1 s</td>
+              <td>Timestep</td>
+            </tr>
+            <tr>
+              <td><code>reaction_delay</code></td>
+              <td>0.3 s</td>
+              <td>Human reaction time (3 steps)</td>
+            </tr>
+            <tr>
+              <td><code>duration</code></td>
+              <td>300 s</td>
+              <td>Episode length (5 min)</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="results-note">
+          Note: Using absolute minimum (not 5th percentile) for Min Gap and Min TTC
+          to ensure worst-case safety events are never hidden.
+        </p>
+      </div>
+
+      <!-- Metrics Comparison Table -->
+      <div class="results-params">
+        <h4>Results Comparison</h4>
+        <table class="results-table">
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>25 Humans</th>
+              <th>20 Humans</th>
+              <th>15 Humans</th>
+              <th>10 Humans</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="5" style="color: var(--accent-cyan); font-weight: 600; background: rgba(0,255,213,0.03);">Speed</td></tr>
+            <tr>
+              <td>Avg Speed (m/s)</td>
+              <td>3.33</td>
+              <td>5.35</td>
+              <td>8.72</td>
+              <td>15.06</td>
+            </tr>
+            <tr>
+              <td>Std Speed</td>
+              <td>0.22</td>
+              <td>0.40</td>
+              <td>0.80</td>
+              <td>1.75</td>
+            </tr>
+            <tr>
+              <td>Avg Speed Variance</td>
+              <td>0.88</td>
+              <td>1.14</td>
+              <td>1.53</td>
+              <td>0.05</td>
+            </tr>
+            <tr>
+              <td>Max Speed Variance</td>
+              <td>2.41</td>
+              <td>4.56</td>
+              <td>4.49</td>
+              <td>0.63</td>
+            </tr>
+            <tr><td colspan="5" style="color: var(--accent-cyan); font-weight: 600; background: rgba(0,255,213,0.03);">Safety</td></tr>
+            <tr>
+              <td>Min Gap Ever (m)</td>
+              <td>3.27</td>
+              <td>4.46</td>
+              <td>8.34</td>
+              <td>18.82</td>
+            </tr>
+            <tr>
+              <td>Avg Min Gap (m)</td>
+              <td>4.61</td>
+              <td>7.00</td>
+              <td>10.88</td>
+              <td>21.57</td>
+            </tr>
+            <tr>
+              <td>Min TTC Ever (s)</td>
+              <td>3.71</td>
+              <td>5.01</td>
+              <td>8.45</td>
+              <td>21.62</td>
+            </tr>
+            <tr>
+              <td>TTC Below 2s Fraction</td>
+              <td>0.00</td>
+              <td>0.00</td>
+              <td>0.00</td>
+              <td>0.00</td>
+            </tr>
+            <tr><td colspan="5" style="color: var(--accent-cyan); font-weight: 600; background: rgba(0,255,213,0.03);">Comfort</td></tr>
+            <tr>
+              <td>Avg Abs Jerk (m/s&sup3;)</td>
+              <td>0.08</td>
+              <td>0.06</td>
+              <td>0.07</td>
+              <td>0.06</td>
+            </tr>
+            <tr>
+              <td>Max Abs Jerk (m/s&sup3;)</td>
+              <td>0.41</td>
+              <td>0.28</td>
+              <td>0.21</td>
+              <td>0.15</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </details>
+</section>
+
+<section class="project-page__section">
+  <h3 class="project-page__section-title">&gt; takeaways and next steps</h3>
+  <div class="project-page__thoughts">
+    <p>
+      The current IDM time headway (T=1.5s) is too conservative, causing unrealistically low speeds even at moderate densities. The 15-20 vehicle range on 300m appears promising for demonstrating control benefits, but needs validation with realistic parameters.
+    </p>
+    <p>
+      The goal is to find the "sweet spot" regime where speed variance is high (waves forming) but throughput still has room for improvement—this is where V2V communication or a learned policy can demonstrate measurable gains over the all-human baseline.
+    </p>
+    <p>
+      <strong>Next steps:</strong> (1) Tune IDM parameters to match real highway behavior, (2) sweep vehicle counts to find the critical density for wave formation, and (3) validate the promising density range with the updated parameters.
     </p>
   </div>
 </section>
@@ -293,14 +600,7 @@
   <h3 class="project-page__section-title">&gt; progress</h3>
   <div class="project-page__thoughts">
     <p>
-      Integrated the FSM+IDM controller and validated behavior under nominal conditions.
-      Enabled conservative V2V braking propagation and compared against the all-human baseline
-      at matched densities.
-    </p>
-    <p>
-      Began evaluating robustness by introducing control latency and actuator lag.
-      The structured controller degrades gracefully under increasing delay,
-      establishing a strong baseline for later comparison with learned policies.
+     TBD
     </p>
   </div>
 </section>

@@ -822,3 +822,207 @@ ul {
         height: 350px;
     }
 }
+
+/* ============================================
+   Collapsible Results Section
+   ============================================ */
+
+.results-collapsible {
+    background: var(--bg-card);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    max-width: 900px;
+    overflow: hidden;
+}
+
+.results-collapsible__trigger {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    color: var(--accent-cyan);
+    transition: all var(--transition-base);
+    list-style: none;
+}
+
+.results-collapsible__trigger::-webkit-details-marker {
+    display: none;
+}
+
+.results-collapsible__trigger:hover {
+    background: rgba(0, 255, 213, 0.05);
+    color: var(--accent-magenta);
+}
+
+.results-collapsible__trigger::before {
+    content: '';
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 6px solid currentColor;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    transition: transform var(--transition-fast);
+}
+
+.results-collapsible[open] > .results-collapsible__trigger::before {
+    transform: rotate(90deg);
+}
+
+.results-collapsible__content {
+    padding: 0 var(--spacing-md) var(--spacing-md);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Density sections (25 cars / 10 cars) */
+.results-density-section {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-sm);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.results-density-section h4 {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: var(--accent-magenta);
+    margin-bottom: var(--spacing-sm);
+    padding-bottom: var(--spacing-xs);
+    border-bottom: 1px solid rgba(255, 0, 170, 0.2);
+}
+
+/* Video grid */
+.results-video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+}
+
+.results-video-grid video {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: #000;
+}
+
+/* Plots grid */
+.results-plots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-sm);
+}
+
+.results-plots-grid figure {
+    margin: 0;
+}
+
+.results-plots-grid img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all var(--transition-base);
+}
+
+.results-plots-grid img:hover {
+    border-color: var(--accent-cyan);
+    box-shadow: var(--glow-cyan);
+}
+
+.results-plots-grid figcaption {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: var(--spacing-xs);
+}
+
+/* Parameters section */
+.results-params {
+    margin-top: var(--spacing-md);
+}
+
+.results-params h4 {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: var(--accent-amber);
+    margin-bottom: var(--spacing-sm);
+    padding-left: var(--spacing-xs);
+    border-left: 2px solid var(--accent-amber);
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.results-table th,
+.results-table td {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.results-table th {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--accent-cyan);
+    background: rgba(0, 255, 213, 0.05);
+}
+
+.results-table td {
+    color: var(--text-secondary);
+}
+
+.results-table td code {
+    font-family: var(--font-mono);
+    color: var(--accent-purple);
+    background: rgba(170, 102, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.results-table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.results-note {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: var(--spacing-sm);
+    font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .results-video-grid,
+    .results-plots-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .results-collapsible {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .results-collapsible__trigger {
+        padding: var(--spacing-sm);
+        font-size: 0.85rem;
+    }
+
+    .results-collapsible__content {
+        padding: 0 var(--spacing-sm) var(--spacing-sm);
+    }
+
+    .results-table {
+        font-size: 0.8rem;
+    }
+}
