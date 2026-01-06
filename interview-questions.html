@@ -395,6 +395,45 @@ The walk always returns — but sometimes it takes arbitrarily long.
         \\[
         \\frac{36}{720} = \\frac{1}{20} = 5\\% .
         \\]`
+    },
+    {
+        id: 'Leetcode: Count total number of colored squares',
+        title: 'Leetcode: Count total number of colored squares',
+        problem: `There exists an infinitely large two-dimensional grid of uncolored unit cells. You are given a positive integer n, indicating that you must do the following routine for n minutes: At the first minute, color any arbitrary unit cell blue. Every minute thereafter, color blue every uncolored cell that touches a blue cell. Return the number of colored cells at the end of n minutes.
+
+            <img src="assets/leetcode-colored-squares.png" alt="Colored cells for n=1, n=2, n=3" style="max-width:100%; margin:12px 0; border-radius:8px;">
+
+            Example 1: n = 1 → Output: 1 (only 1 blue cell)
+            Example 2: n = 2 → Output: 5 (4 on boundary + 1 center)
+
+            Constraints: 1 ≤ n ≤ 10⁵`,
+        intuition: `The shape forms a diamond pattern. At minute 1, we have 1 cell. Each subsequent minute adds a ring of cells around the existing shape. The number of new cells added at each step follows a pattern: minute 2 adds 4 cells, minute 3 adds 4 more, etc. This forms a diamond with side length n.`,
+        proof: `<strong>Recursive Solution:</strong>
+
+            <pre><code class="language-python">def coloredCells(n):
+    if n == 1:
+        return 1
+    return coloredCells(n-1) + 4*(n-1)</code></pre>
+
+    This solution works because at each minute after the first, we add 4(n-1) new cells to the existing colored area.
+
+            <strong>Pattern Analysis:</strong>
+            - n=1: 1 cell
+            - n=2: 1 + 4 = 5 cells
+            - n=3: 5 + 8 = 13 cells
+            - n=4: 13 + 12 = 25 cells
+
+            Each step adds 4(n-1) new cells to the boundary.
+
+            <strong>Closed-form Formula:</strong>
+            \\[ f(n) = 1 + 4(1 + 2 + ... + (n-1)) = 1 + 4 \\cdot \\frac{(n-1)n}{2} = 2n^2 - 2n + 1 \\]
+                <strong>Optimal Solution:</strong>
+
+            <pre><code class="language-python">def coloredCells(n):
+    
+    return 2*n*(n-1)+1</code></pre>
+
+        `
     }
 ];
 
