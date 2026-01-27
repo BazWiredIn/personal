@@ -595,12 +595,92 @@
 </section>
 
 
-<h2 class="blog-heading">Jan 1, 2026 [Structured control under uncertainty]</h2>
+<h2 class="blog-heading">Jan 20, 2026 [IDM parameter recalibration]</h2>
 <section class="project-page__section">
-  <h3 class="project-page__section-title">&gt; progress</h3>
+  <h3 class="project-page__section-title">&gt; the problem</h3>
   <div class="project-page__thoughts">
     <p>
-     TBD
+      My initial sim used placeholder IDM defaults—time to ground them in actual research. I dug into a few recent calibration studies to see what empirically-validated values look like.
+    </p>
+  </div>
+</section>
+
+<section class="project-page__section">
+  <h3 class="project-page__section-title">&gt; literature review</h3>
+  <div class="project-page__thoughts">
+    <p>
+      <strong>Vasconcelos &amp; Bandeira (2025):</strong> Calibrated IDM against Portuguese driver data. They found <code>a = 2.03–2.06 m/s²</code> with time headways between 1.0–1.6s depending on how aggressive the driver is.
+    </p>
+    <p>
+      <strong>Mu et al. (2023):</strong> Used NGSIM trajectory data. Mean time headway <code>T = 1.34s</code> with <code>σ = 0.34s</code>. Good empirical baseline.
+    </p>
+    <p>
+      <strong>Treiber et al.:</strong> The original IDM authors themselves admit they use <code>a = 0.3 m/s²</code> in their demos just to exaggerate wave formation—"realistic values are 1–2 m/s²" for both acceleration and comfortable braking.
+    </p>
+  </div>
+</section>
+
+<section class="project-page__section">
+  <h3 class="project-page__section-title">&gt; parameter updates</h3>
+  <div class="project-page__thoughts">
+    <table class="param-table">
+      <thead>
+        <tr>
+          <th>Parameter</th>
+          <th>Old</th>
+          <th>New</th>
+          <th>Rationale</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>a</code></td>
+          <td>1.5 m/s²</td>
+          <td>2.0 m/s²</td>
+          <td>Vasconcelos &amp; Bandeira: 2.03–2.06 m/s²</td>
+        </tr>
+        <tr>
+          <td><code>T</code></td>
+          <td>1.5 s</td>
+          <td>1.2 s</td>
+          <td>Vasconcelos &amp; Bandeira: 1.0–1.6s range</td>
+        </tr>
+        <tr>
+          <td><code>v0</code></td>
+          <td>25 m/s</td>
+          <td>30 m/s</td>
+          <td>~108 km/h, typical highway free-flow</td>
+        </tr>
+        <tr>
+          <td><code>T_std</code></td>
+          <td>0.3 s</td>
+          <td>0.34 s</td>
+          <td>Mu et al.: σ = 0.34s from NGSIM</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      The other parameters—<code>s0 = 2.0m</code>, <code>b = 2.0 m/s²</code>, <code>δ = 4</code>—already fall within calibrated ranges, so I'm leaving them alone. These updates should give me more realistic equilibrium speeds while still preserving the stop-and-go waves at critical densities. That's the goal: realistic behavior, but keep the interesting dynamics.
+    </p>
+  </div>
+</section>
+
+<section class="project-page__section">
+  <h3 class="project-page__section-title">&gt; references</h3>
+  <div class="project-page__thoughts">
+    <ul>
+      <li>Vasconcelos, L. &amp; Bandeira, J.M. (2025). "Calibration of the Intelligent Driver Model (IDM) at the Microscopic Level." <em>Future Transportation</em>, 5(2), 57. <a href="https://doi.org/10.3390/futuretransp5020057" target="_blank">doi:10.3390/futuretransp5020057</a></li>
+      <li>Mu, Z., Jahedinia, F. &amp; Park, B. (2023). "Does the Intelligent Driver Model Adequately Represent Human Drivers?" <em>VEHITS 2023</em>, pp. 113-121.</li>
+      <li>Treiber, M. "Longitudinal Traffic Model: The IDM." <a href="https://mtreiber.de/MicroApplet/IDM.html" target="_blank">mtreiber.de</a></li>
+    </ul>
+  </div>
+</section>
+
+<section class="project-page__section">
+  <h3 class="project-page__section-title">&gt; next steps</h3>
+  <div class="project-page__thoughts">
+    <p>
+      (1) Run simulations with the updated parameters, (2) gather data to validate more realistic behavior, and (3) compare results against the Dec 31 baseline.
     </p>
   </div>
 </section>
