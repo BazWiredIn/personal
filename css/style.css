@@ -385,6 +385,11 @@ ul {
     border-radius: 4px;
 }
 
+.tag--wip {
+    color: var(--accent-amber);
+    background: rgba(255, 170, 0, 0.1);
+}
+
 .card__links {
     display: flex;
     gap: var(--spacing-sm);
